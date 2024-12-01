@@ -21,8 +21,8 @@ editor: visual
 library(readr)
 library(tidyr)
 library(dplyr)
+library(tidyverse)
 ```
-
 
 ```{r}
 # read in the data
@@ -34,8 +34,7 @@ df <- df |>
   rename(Diabetes=Diabetes_binary) |>
   mutate(Diabetes=case_when(
     Diabetes==0 ~ "no diabetes",
-    Diabetes==1 ~ "prediabetes", 
-    Diabetes==2 ~ "diabetes")) |>
+    Diabetes==1 ~ "prediabetes or diabetes")) |>
   mutate(Diabetes=as.factor(Diabetes)) |>
   
   rename(High_BP=HighBP) |>
@@ -66,10 +65,11 @@ df <- df |>
     Stroke==1 ~ "yes")) |>
   mutate(Stroke=as.factor(Stroke)) |>
   
-  mutate(HeartDiseaseorAttack=case_when(
-    HeartDiseaseorAttack==0 ~ "no",
-    HeartDiseaseorAttack==1 ~ "yes")) |>
-  mutate(HeartDiseaseorAttack=as.factor(HeartDiseaseorAttack)) |>
+  rename(Heart_Disease_or_Attack=HeartDiseaseorAttack) |>
+  mutate(Heart_Disease_or_Attack=case_when(
+    Heart_Disease_or_Attack==0 ~ "no",
+    Heart_Disease_or_Attack==1 ~ "yes")) |>
+  mutate(Heart_Disease_or_Attack=as.factor(Heart_Disease_or_Attack)) |>
   
   rename(Physical_Activity_30days=PhysActivity) |>
   mutate(Physical_Activity_30days=case_when(
@@ -118,7 +118,6 @@ df <- df |>
   
   rename(Bad_Mental_Days_of_Past_30=MentHlth) |>
   rename(Bad_Physical_Days_of_Past_30=PhysHlth) |>
-  
     
   rename(Difficulty_Walking=DiffWalk) |>
   mutate(Difficulty_Walking=case_when(
@@ -172,15 +171,48 @@ head(df)
 ```
 
 ```{r}
-# look at unique values (validation!)
+# check for missing values
+sum_na <- function(column){
+ sum(is.na(column))
+}
 
+na_counts <- df |>
+ summarize(across(everything(), sum_na))
 
-# look at outliers of numerical data (validation!)
-# convert factor vars and use meaningful names
-# address other datatype issues
-# check for missingness
+na_counts
 ```
 
+There are no missing values! What values do we see for each column?
+
+```{r}
+table(df$Diabetes, High_BP=df$High_BP)
+table(df$Diabetes, High_Cholesterol=df$High_Cholesterol)
+table(df$Diabetes, Checked_Cholesterol_5years=df$Checked_Cholesterol_5years)
+table(df$Diabetes, Smoker=df$Smoker)
+table(df$Diabetes, Stroke=df$Stroke)
+table(df$Diabetes, Heart_Disease_or_Attack=df$Heart_Disease_or_Attack)
+table(df$Diabetes, Physical_Activity_30days=df$Physical_Activity_30days)
+table(df$Diabetes, Daily_Fruit=df$Daily_Fruit)
+table(df$Diabetes, Daily_Vegetable=df$Daily_Vegetable)
+table(df$Diabetes, Heavy_Alcohol_Consumption=df$Heavy_Alcohol_Consumption)
+table(df$Diabetes, Has_Healthcare=df$Has_Healthcare)
+table(df$Diabetes, No_Doctor_bc_Cost=df$No_Doctor_bc_Cost)
+table(df$Diabetes, General_Health=df$General_Health)
+table(df$Diabetes, Difficulty_Walking=df$Difficulty_Walking)
+table(df$Diabetes, Age=df$Age)
+table(df$Diabetes, Highest_Education_Achieved=df$Highest_Education_Achieved)
+table(df$Diabetes, Income=df$Income)
+```
+
+No unexpected values; let's look at the distribution of numerical values:
+
+```{r}
+ggplot(df, aes(x = BMI)) + geom_density(aes(fill = Diabetes), alpha=0.5, adjust=2) + ggtitle("BMI by Diabetes")
+
+ggplot(df |> filter(Bad_Mental_Days_of_Past_30>0), aes(x = Bad_Mental_Days_of_Past_30)) + geom_density(aes(fill = Diabetes), alpha=0.5) + ggtitle("Bad_Mental_Days_of_Past_30 by Diabetes")
+
+ggplot(df |> filter(Bad_Physical_Days_of_Past_30>0), aes(x = Bad_Physical_Days_of_Past_30)) + geom_density(aes(fill = Diabetes), alpha=0.5) + ggtitle("Bad_Physical_Days_of_Past_30 by Diabetes")
+```
 
 ## Data Summaries
 

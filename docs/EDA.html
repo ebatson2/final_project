@@ -149,7 +149,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read in the data</span></span>
@@ -184,42 +185,42 @@ dbl (22): Diabetes_binary, HighBP, HighChol, CholCheck, BMI, Smoker, Stroke,...
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Diabetes=</span>Diabetes_binary) <span class="sc">|&gt;</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Diabetes=</span><span class="fu">case_when</span>(</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    Diabetes<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no diabetes"</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    Diabetes<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"prediabetes"</span>, </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    Diabetes<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"diabetes"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Diabetes=</span><span class="fu">as.factor</span>(Diabetes)) <span class="sc">|&gt;</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">High_BP=</span>HighBP) <span class="sc">|&gt;</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">High_BP=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    High_BP<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    High_BP<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">High_BP=</span><span class="fu">as.factor</span>(High_BP)) <span class="sc">|&gt;</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">High_Cholesterol=</span>HighChol) <span class="sc">|&gt;</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">High_Cholesterol=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    High_Cholesterol<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    High_Cholesterol<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">High_Cholesterol=</span><span class="fu">as.factor</span>(High_Cholesterol)) <span class="sc">|&gt;</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Checked_Cholesterol_5years=</span>CholCheck) <span class="sc">|&gt;</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Checked_Cholesterol_5years=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    Checked_Cholesterol_5years<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    Checked_Cholesterol_5years<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Checked_Cholesterol_5years=</span><span class="fu">as.factor</span>(Checked_Cholesterol_5years)) <span class="sc">|&gt;</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Smoker=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    Smoker<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    Smoker<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Smoker=</span><span class="fu">as.factor</span>(Smoker)) <span class="sc">|&gt;</span></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Stroke=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    Stroke<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    Stroke<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Stroke=</span><span class="fu">as.factor</span>(Stroke)) <span class="sc">|&gt;</span></span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">HeartDiseaseorAttack=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    HeartDiseaseorAttack<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    HeartDiseaseorAttack<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">HeartDiseaseorAttack=</span><span class="fu">as.factor</span>(HeartDiseaseorAttack)) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    Diabetes<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"prediabetes or diabetes"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Diabetes=</span><span class="fu">as.factor</span>(Diabetes)) <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">High_BP=</span>HighBP) <span class="sc">|&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">High_BP=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    High_BP<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    High_BP<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">High_BP=</span><span class="fu">as.factor</span>(High_BP)) <span class="sc">|&gt;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">High_Cholesterol=</span>HighChol) <span class="sc">|&gt;</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">High_Cholesterol=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    High_Cholesterol<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    High_Cholesterol<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">High_Cholesterol=</span><span class="fu">as.factor</span>(High_Cholesterol)) <span class="sc">|&gt;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Checked_Cholesterol_5years=</span>CholCheck) <span class="sc">|&gt;</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Checked_Cholesterol_5years=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    Checked_Cholesterol_5years<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    Checked_Cholesterol_5years<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Checked_Cholesterol_5years=</span><span class="fu">as.factor</span>(Checked_Cholesterol_5years)) <span class="sc">|&gt;</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Smoker=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    Smoker<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    Smoker<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Smoker=</span><span class="fu">as.factor</span>(Smoker)) <span class="sc">|&gt;</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Stroke=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    Stroke<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    Stroke<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Stroke=</span><span class="fu">as.factor</span>(Stroke)) <span class="sc">|&gt;</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Heart_Disease_or_Attack=</span>HeartDiseaseorAttack) <span class="sc">|&gt;</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Heart_Disease_or_Attack=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    Heart_Disease_or_Attack<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    Heart_Disease_or_Attack<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Heart_Disease_or_Attack=</span><span class="fu">as.factor</span>(Heart_Disease_or_Attack)) <span class="sc">|&gt;</span></span>
 <span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Physical_Activity_30days=</span>PhysActivity) <span class="sc">|&gt;</span></span>
 <span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Physical_Activity_30days=</span><span class="fu">case_when</span>(</span>
@@ -268,57 +269,56 @@ dbl (22): Diabetes_binary, HighBP, HighChol, CholCheck, BMI, Smoker, Stroke,...
 <span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Bad_Mental_Days_of_Past_30=</span>MentHlth) <span class="sc">|&gt;</span></span>
 <span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Bad_Physical_Days_of_Past_30=</span>PhysHlth) <span class="sc">|&gt;</span></span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Difficulty_Walking=</span>DiffWalk) <span class="sc">|&gt;</span></span>
-<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Difficulty_Walking=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    Difficulty_Walking<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
-<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>    Difficulty_Walking<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Difficulty_Walking=</span><span class="fu">as.factor</span>(Difficulty_Walking)) <span class="sc">|&gt;</span></span>
-<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sex=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>    Sex<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"female"</span>,</span>
-<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>    Sex<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"male"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sex=</span><span class="fu">as.factor</span>(Sex)) <span class="sc">|&gt;</span></span>
-<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Age=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"18-24"</span>,</span>
-<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"25-29"</span>,</span>
-<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">"30-34"</span>,</span>
-<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">4</span> <span class="sc">~</span> <span class="st">"35-39"</span>,</span>
-<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">5</span> <span class="sc">~</span> <span class="st">"40-44"</span>,</span>
-<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">6</span> <span class="sc">~</span> <span class="st">"45-49"</span>,</span>
-<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">7</span> <span class="sc">~</span> <span class="st">"50-54"</span>,</span>
-<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">8</span> <span class="sc">~</span> <span class="st">"55-59"</span>,</span>
-<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">9</span> <span class="sc">~</span> <span class="st">"60-64"</span>,</span>
-<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">10</span> <span class="sc">~</span> <span class="st">"65-69"</span>,</span>
-<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">11</span> <span class="sc">~</span> <span class="st">"70-74"</span>,</span>
-<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">12</span> <span class="sc">~</span> <span class="st">"75-79"</span>,</span>
-<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">13</span> <span class="sc">~</span> <span class="st">"80 or older"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Age=</span><span class="fu">as.factor</span>(Age)) <span class="sc">|&gt;</span></span>
-<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Highest_Education_Achieved=</span>Education) <span class="sc">|&gt;</span></span>
-<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Highest_Education_Achieved=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"kindergarten"</span>,</span>
-<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"1st-8th grade"</span>,</span>
-<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">"9th-11th grade"</span>,</span>
-<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">4</span> <span class="sc">~</span> <span class="st">"12th grade or GED"</span>,</span>
-<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">5</span> <span class="sc">~</span> <span class="st">"1-3 years college"</span>,</span>
-<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">6</span> <span class="sc">~</span> <span class="st">"4+ years college"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Highest_Education_Achieved=</span><span class="fu">as.factor</span>(Highest_Education_Achieved)) <span class="sc">|&gt;</span></span>
-<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Income=</span><span class="fu">case_when</span>(</span>
-<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"less than $10,000"</span>,</span>
-<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"less than $15,000"</span>,</span>
-<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">"less than $20,000"</span>,</span>
-<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">4</span> <span class="sc">~</span> <span class="st">"less than $25,000"</span>,</span>
-<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">5</span> <span class="sc">~</span> <span class="st">"less than $35,000"</span>,</span>
-<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">6</span> <span class="sc">~</span> <span class="st">"less than $50,000"</span>,</span>
-<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">7</span> <span class="sc">~</span> <span class="st">"less than $75,000"</span>,</span>
-<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">8</span> <span class="sc">~</span> <span class="st">"more than $75,000"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Income=</span><span class="fu">as.factor</span>(Income))</span>
-<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Difficulty_Walking=</span>DiffWalk) <span class="sc">|&gt;</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Difficulty_Walking=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>    Difficulty_Walking<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"no"</span>,</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    Difficulty_Walking<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"yes"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Difficulty_Walking=</span><span class="fu">as.factor</span>(Difficulty_Walking)) <span class="sc">|&gt;</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sex=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>    Sex<span class="sc">==</span><span class="dv">0</span> <span class="sc">~</span> <span class="st">"female"</span>,</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>    Sex<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"male"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Sex=</span><span class="fu">as.factor</span>(Sex)) <span class="sc">|&gt;</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Age=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"18-24"</span>,</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"25-29"</span>,</span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">"30-34"</span>,</span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">4</span> <span class="sc">~</span> <span class="st">"35-39"</span>,</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">5</span> <span class="sc">~</span> <span class="st">"40-44"</span>,</span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">6</span> <span class="sc">~</span> <span class="st">"45-49"</span>,</span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">7</span> <span class="sc">~</span> <span class="st">"50-54"</span>,</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">8</span> <span class="sc">~</span> <span class="st">"55-59"</span>,</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">9</span> <span class="sc">~</span> <span class="st">"60-64"</span>,</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">10</span> <span class="sc">~</span> <span class="st">"65-69"</span>,</span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">11</span> <span class="sc">~</span> <span class="st">"70-74"</span>,</span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">12</span> <span class="sc">~</span> <span class="st">"75-79"</span>,</span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>    Age<span class="sc">==</span><span class="dv">13</span> <span class="sc">~</span> <span class="st">"80 or older"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Age=</span><span class="fu">as.factor</span>(Age)) <span class="sc">|&gt;</span></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Highest_Education_Achieved=</span>Education) <span class="sc">|&gt;</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Highest_Education_Achieved=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"kindergarten"</span>,</span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"1st-8th grade"</span>,</span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">"9th-11th grade"</span>,</span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">4</span> <span class="sc">~</span> <span class="st">"12th grade or GED"</span>,</span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">5</span> <span class="sc">~</span> <span class="st">"1-3 years college"</span>,</span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>    Highest_Education_Achieved<span class="sc">==</span><span class="dv">6</span> <span class="sc">~</span> <span class="st">"4+ years college"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Highest_Education_Achieved=</span><span class="fu">as.factor</span>(Highest_Education_Achieved)) <span class="sc">|&gt;</span></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Income=</span><span class="fu">case_when</span>(</span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">1</span> <span class="sc">~</span> <span class="st">"less than $10,000"</span>,</span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">2</span> <span class="sc">~</span> <span class="st">"less than $15,000"</span>,</span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">3</span> <span class="sc">~</span> <span class="st">"less than $20,000"</span>,</span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">4</span> <span class="sc">~</span> <span class="st">"less than $25,000"</span>,</span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">5</span> <span class="sc">~</span> <span class="st">"less than $35,000"</span>,</span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">6</span> <span class="sc">~</span> <span class="st">"less than $50,000"</span>,</span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">7</span> <span class="sc">~</span> <span class="st">"less than $75,000"</span>,</span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>    Income<span class="sc">==</span><span class="dv">8</span> <span class="sc">~</span> <span class="st">"more than $75,000"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Income=</span><span class="fu">as.factor</span>(Income))</span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 22
   Diabetes   High_BP High_Cholesterol Checked_Cholesterol_…¹   BMI Smoker Stroke
@@ -330,7 +330,7 @@ dbl (22): Diabetes_binary, HighBP, HighChol, CholCheck, BMI, Smoker, Stroke,...
 5 no diabet… yes     yes              yes                       24 no     no    
 6 no diabet… yes     yes              yes                       25 yes    no    
 # ℹ abbreviated name: ¹​Checked_Cholesterol_5years
-# ℹ 15 more variables: HeartDiseaseorAttack &lt;fct&gt;,
+# ℹ 15 more variables: Heart_Disease_or_Attack &lt;fct&gt;,
 #   Physical_Activity_30days &lt;fct&gt;, Daily_Fruit &lt;fct&gt;, Daily_Vegetable &lt;fct&gt;,
 #   Heavy_Alcohol_Consumption &lt;fct&gt;, Has_Healthcare &lt;fct&gt;,
 #   No_Doctor_bc_Cost &lt;fct&gt;, General_Health &lt;fct&gt;,
@@ -339,22 +339,202 @@ dbl (22): Diabetes_binary, HighBP, HighChol, CholCheck, BMI, Smoker, Stroke,...
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># look at unique values (validation!)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># look at outliers of numerical data (validation!)</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># convert factor vars and use meaningful names</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># address other datatype issues</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># check for missingness</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check for missing values</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sum_na <span class="ot">&lt;-</span> <span class="cf">function</span>(column){</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a> <span class="fu">sum</span>(<span class="fu">is.na</span>(column))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>na_counts <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a> <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), sum_na))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>na_counts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 22
+  Diabetes High_BP High_Cholesterol Checked_Cholesterol_5y…¹   BMI Smoker Stroke
+     &lt;int&gt;   &lt;int&gt;            &lt;int&gt;                    &lt;int&gt; &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
+1        0       0                0                        0     0      0      0
+# ℹ abbreviated name: ¹​Checked_Cholesterol_5years
+# ℹ 15 more variables: Heart_Disease_or_Attack &lt;int&gt;,
+#   Physical_Activity_30days &lt;int&gt;, Daily_Fruit &lt;int&gt;, Daily_Vegetable &lt;int&gt;,
+#   Heavy_Alcohol_Consumption &lt;int&gt;, Has_Healthcare &lt;int&gt;,
+#   No_Doctor_bc_Cost &lt;int&gt;, General_Health &lt;int&gt;,
+#   Bad_Mental_Days_of_Past_30 &lt;int&gt;, Bad_Physical_Days_of_Past_30 &lt;int&gt;,
+#   Difficulty_Walking &lt;int&gt;, Sex &lt;int&gt;, Age &lt;int&gt;, …</code></pre>
+</div>
+</div>
+<p>There are no missing values! What values do we see for each column?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">High_BP=</span>df<span class="sc">$</span>High_BP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         High_BP
+                              no    yes
+  no diabetes             136109  82225
+  prediabetes or diabetes   8742  26604</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">High_Cholesterol=</span>df<span class="sc">$</span>High_Cholesterol)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         High_Cholesterol
+                              no    yes
+  no diabetes             134429  83905
+  prediabetes or diabetes  11660  23686</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Checked_Cholesterol_5years=</span>df<span class="sc">$</span>Checked_Cholesterol_5years)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Checked_Cholesterol_5years
+                              no    yes
+  no diabetes               9229 209105
+  prediabetes or diabetes    241  35105</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Smoker=</span>df<span class="sc">$</span>Smoker)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Smoker
+                              no    yes
+  no diabetes             124228  94106
+  prediabetes or diabetes  17029  18317</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Stroke=</span>df<span class="sc">$</span>Stroke)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Stroke
+                              no    yes
+  no diabetes             211310   7024
+  prediabetes or diabetes  32078   3268</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Heart_Disease_or_Attack=</span>df<span class="sc">$</span>Heart_Disease_or_Attack)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Heart_Disease_or_Attack
+                              no    yes
+  no diabetes             202319  16015
+  prediabetes or diabetes  27468   7878</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Physical_Activity_30days=</span>df<span class="sc">$</span>Physical_Activity_30days)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Physical_Activity_30days
+                              no    yes
+  no diabetes              48701 169633
+  prediabetes or diabetes  13059  22287</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Daily_Fruit=</span>df<span class="sc">$</span>Daily_Fruit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Daily_Fruit
+                              no    yes
+  no diabetes              78129 140205
+  prediabetes or diabetes  14653  20693</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Daily_Vegetable=</span>df<span class="sc">$</span>Daily_Vegetable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Daily_Vegetable
+                              no    yes
+  no diabetes              39229 179105
+  prediabetes or diabetes   8610  26736</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Heavy_Alcohol_Consumption=</span>df<span class="sc">$</span>Heavy_Alcohol_Consumption)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Heavy_Alcohol_Consumption
+                              no    yes
+  no diabetes             204910  13424
+  prediabetes or diabetes  34514    832</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Has_Healthcare=</span>df<span class="sc">$</span>Has_Healthcare)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Has_Healthcare
+                              no    yes
+  no diabetes              10995 207339
+  prediabetes or diabetes   1422  33924</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">No_Doctor_bc_Cost=</span>df<span class="sc">$</span>No_Doctor_bc_Cost)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         No_Doctor_bc_Cost
+                              no    yes
+  no diabetes             200722  17612
+  prediabetes or diabetes  31604   3742</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">General_Health=</span>df<span class="sc">$</span>General_Health)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         General_Health
+                          exellent  fair  good  poor very good
+  no diabetes                44159 21780 62189  7503     82703
+  prediabetes or diabetes     1140  9790 13457  4578      6381</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Difficulty_Walking=</span>df<span class="sc">$</span>Difficulty_Walking)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Difficulty_Walking
+                              no    yes
+  no diabetes             188780  29554
+  prediabetes or diabetes  22225  13121</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Age=</span>df<span class="sc">$</span>Age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Age
+                          18-24 25-29 30-34 35-39 40-44 45-49 50-54 55-59 60-64
+  no diabetes              5622  7458 10809 13197 15106 18077 23226 26569 27511
+  prediabetes or diabetes    78   140   314   626  1051  1742  3088  4263  5733
+                         Age
+                          65-69 70-74 75-79 80 or older
+  no diabetes             25636 18392 12577       14154
+  prediabetes or diabetes  6558  5141  3403        3209</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Highest_Education_Achieved=</span>df<span class="sc">$</span>Highest_Education_Achieved)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Highest_Education_Achieved
+                          1-3 years college 12th grade or GED 1st-8th grade
+  no diabetes                         59556             51684          2860
+  prediabetes or diabetes             10354             11066          1183
+                         Highest_Education_Achieved
+                          4+ years college 9th-11th grade kindergarten
+  no diabetes                        96925           7182          127
+  prediabetes or diabetes            10400           2296           47</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>Diabetes, <span class="at">Income=</span>df<span class="sc">$</span>Income)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         Income
+                          less than $10,000 less than $15,000 less than $20,000
+  no diabetes                          7428              8697             12426
+  prediabetes or diabetes              2383              3086              3568
+                         Income
+                          less than $25,000 less than $35,000 less than $50,000
+  no diabetes                         16081             21379             31179
+  prediabetes or diabetes              4054              4504              5291
+                         Income
+                          less than $75,000 more than $75,000
+  no diabetes                         37954             83190
+  prediabetes or diabetes              5265              7195</code></pre>
+</div>
+</div>
+<p>No unexpected values; let’s look at the distribution of numerical values:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> BMI)) <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Diabetes), <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">adjust=</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"BMI by Diabetes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EDA_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df <span class="sc">|&gt;</span> <span class="fu">filter</span>(Bad_Mental_Days_of_Past_30<span class="sc">&gt;</span><span class="dv">0</span>), <span class="fu">aes</span>(<span class="at">x =</span> Bad_Mental_Days_of_Past_30)) <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Diabetes), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Bad_Mental_Days_of_Past_30 by Diabetes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EDA_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df <span class="sc">|&gt;</span> <span class="fu">filter</span>(Bad_Physical_Days_of_Past_30<span class="sc">&gt;</span><span class="dv">0</span>), <span class="fu">aes</span>(<span class="at">x =</span> Bad_Physical_Days_of_Past_30)) <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">fill =</span> Diabetes), <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Bad_Physical_Days_of_Past_30 by Diabetes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="EDA_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 </section>
 <section id="data-summaries" class="level2">
 <h2 class="anchored" data-anchor-id="data-summaries">Data Summaries</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># **do not split data into train/test yet!</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># summary stats + plots (especially as vars relate to response)</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># univariate measures/graphs</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># multivariate measures/graphs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># **do not split data into train/test yet!</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co"># summary stats + plots (especially as vars relate to response)</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="co"># univariate measures/graphs</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co"># multivariate measures/graphs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="Modeling.html">Click here for the Modeling Page</a></p>
 
