@@ -24,11 +24,17 @@ library(dplyr)
 library(tidyverse)
 ```
 
+How is the data stored?
+
 ```{r}
 # read in the data
 df <- readr::read_csv("diabetes_binary_health_indicators_BRFSS2015.csv")
 head(df)
+```
 
+A lot of the columns could have better names, and many of them contain data that should be stored as factors instead of doubles. Let's update the column names and how the data is stored.
+
+```{r}
 # rename columns and update datatypes/data storage
 df <- df |>
   rename(Diabetes=Diabetes_binary) |>
@@ -109,7 +115,7 @@ df <- df |>
   
   rename(General_Health=GenHlth) |>
   mutate(General_Health=case_when(
-    General_Health==1 ~ "exellent",
+    General_Health==1 ~ "excellent",
     General_Health==2 ~ "very good",
     General_Health==3 ~ "good",
     General_Health==4 ~ "fair",
@@ -170,6 +176,16 @@ df <- df |>
 head(df)
 ```
 
+Now our numeric variables consist of:
+
+- BMI
+- Bad_Mental_Days_of_Past_30
+- Bad_Physical_Days_of_Past_30
+
+and the rest of the columns contain factor/categorical variables, including our response variable, which is Diabetes.
+
+Now let's explore what values exist in the data and if any cleaning needs to be done.
+
 ```{r}
 # check for missing values
 sum_na <- function(column){
@@ -182,9 +198,12 @@ na_counts <- df |>
 na_counts
 ```
 
-There are no missing values! What values do we see for each column?
+There are no missing values! What values do we see in each categorical column, and how does each value relate to the response variable?
+
+## Data Summaries
 
 ```{r}
+# Contingency tables!
 table(df$Diabetes, High_BP=df$High_BP)
 table(df$Diabetes, High_Cholesterol=df$High_Cholesterol)
 table(df$Diabetes, Checked_Cholesterol_5years=df$Checked_Cholesterol_5years)
@@ -204,25 +223,151 @@ table(df$Diabetes, Highest_Education_Achieved=df$Highest_Education_Achieved)
 table(df$Diabetes, Income=df$Income)
 ```
 
-No unexpected values; let's look at the distribution of numerical values:
+Let's look at each of the categorical variable frequencies again, but this time with plots:
 
 ```{r}
+# side-by-side bar plots
+ggplot(data = df |>
+  group_by(Diabetes, High_BP) |>
+  summarize(count = n()), aes(x = High_BP, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts with and without High Blood Pressure") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, High_Cholesterol) |>
+  summarize(count = n()), aes(x = High_Cholesterol, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts with and without High Cholesterol") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Checked_Cholesterol_5years) |>
+  summarize(count = n()), aes(x = Checked_Cholesterol_5years, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Checked_Cholesterol_5years") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Smoker) |>
+  summarize(count = n()), aes(x = Smoker, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Smoker") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Stroke) |>
+  summarize(count = n()), aes(x = Stroke, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Stroke") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Heart_Disease_or_Attack) |>
+  summarize(count = n()), aes(x = Heart_Disease_or_Attack, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Heart_Disease_or_Attack") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Physical_Activity_30days) |>
+  summarize(count = n()), aes(x = Physical_Activity_30days, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Physical_Activity_30days") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Daily_Fruit) |>
+  summarize(count = n()), aes(x = Daily_Fruit, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Daily_Fruit") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Daily_Vegetable) |>
+  summarize(count = n()), aes(x = Daily_Vegetable, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Daily_Vegetable") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Heavy_Alcohol_Consumption) |>
+  summarize(count = n()), aes(x = Heavy_Alcohol_Consumption, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Heavy_Alcohol_Consumption") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Has_Healthcare) |>
+  summarize(count = n()), aes(x = Has_Healthcare, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Has_Healthcare") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, No_Doctor_bc_Cost) |>
+  summarize(count = n()), aes(x = No_Doctor_bc_Cost, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. No_Doctor_bc_Cost") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, General_Health) |>
+  summarize(count = n()), aes(x = factor(General_Health, level=c('poor', 'fair', 'good', 'very good', 'excellent')), y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. General_Health") + 
+  geom_bar(position = "dodge", stat = "identity") +
+  xlab("General_Health") +
+  theme(axis.text.x = element_text(angle = 45, vjust=1, hjust=1))
+
+ggplot(data = df |>
+  group_by(Diabetes, Difficulty_Walking) |>
+  summarize(count = n()), aes(x = Difficulty_Walking, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Difficulty_Walking") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
+  group_by(Diabetes, Age) |>
+  summarize(count = n()), aes(x = Age, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Age") + 
+  geom_bar(position = "dodge", stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, vjust=1, hjust=1))
+
+ggplot(data = df |>
+  group_by(Diabetes, Highest_Education_Achieved) |>
+  summarize(count = n()), aes(x = factor(Highest_Education_Achieved, level=c("kindergarten", "1st-8th grade", "9th-11th grade", "12th grade or GED", "1-3 years college", "4+ years college")), y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Highest_Education_Achieved") + 
+  geom_bar(position = "dodge", stat = "identity") +
+  xlab("Highest_Education_Achieved") +
+  theme(axis.text.x = element_text(angle = 45, vjust=1, hjust=1))
+
+ggplot(data = df |>
+  group_by(Diabetes, Income) |>
+  summarize(count = n()), aes(x = Income, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Income") + 
+  geom_bar(position = "dodge", stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, vjust=1, hjust=1))
+```
+
+From the proportions of observations in each category with and without diabetes, it looks like the variables that are most interesting to use for prediction of Diabetes are:
+
+- High_BP
+- High_Cholesterol
+- Smoker
+- Stroke
+- Heart_Disease_or_Attack
+- Physical_Activity_30days
+- Daily_Fruit
+- Daily_Vegetable
+- General_Health
+- Difficulty_Walking
+- Age (*maybe*)
+- Highest_Education_Achieved
+- Income
+
+Now let's look at the distribution of numerical values:
+
+```{r}
+# density plots
 ggplot(df, aes(x = BMI)) + geom_density(aes(fill = Diabetes), alpha=0.5, adjust=2) + ggtitle("BMI by Diabetes")
 
-ggplot(df |> filter(Bad_Mental_Days_of_Past_30>0), aes(x = Bad_Mental_Days_of_Past_30)) + geom_density(aes(fill = Diabetes), alpha=0.5) + ggtitle("Bad_Mental_Days_of_Past_30 by Diabetes")
+ggplot(df |> filter(Bad_Mental_Days_of_Past_30>0), aes(x = Bad_Mental_Days_of_Past_30)) + geom_density(aes(fill = Diabetes), alpha=0.5, adjust=3) + ggtitle("Bad_Mental_Days_of_Past_30 by Diabetes")
 
-ggplot(df |> filter(Bad_Physical_Days_of_Past_30>0), aes(x = Bad_Physical_Days_of_Past_30)) + geom_density(aes(fill = Diabetes), alpha=0.5) + ggtitle("Bad_Physical_Days_of_Past_30 by Diabetes")
+ggplot(df |> filter(Bad_Physical_Days_of_Past_30>0), aes(x = Bad_Physical_Days_of_Past_30)) + geom_density(aes(fill = Diabetes), alpha=0.5, adjust=3) + ggtitle("Bad_Physical_Days_of_Past_30 by Diabetes")
+
+# box and whisker plots
+ggplot(df) + geom_boxplot(aes(x = Diabetes, y = BMI, fill = Diabetes)) + ggtitle("BMI vs. Diabetes")
+ggplot(df) + geom_boxplot(aes(x = Diabetes, y = Bad_Mental_Days_of_Past_30, fill = Diabetes)) + ggtitle("Bad_Mental_Days_of_Past_30 vs. Diabetes")
+ggplot(df) + geom_boxplot(aes(x = Diabetes, y = Bad_Physical_Days_of_Past_30, fill = Diabetes)) + ggtitle("Bad_Physical_Days_of_Past_30 vs. Diabetes")
 ```
 
-## Data Summaries
-
-```{r}
-# **do not split data into train/test yet!
-# summary stats + plots (especially as vars relate to response)
-# univariate measures/graphs
-# multivariate measures/graphs
-```
-
-
+From these plots, it appears that all 3 numerical variables are correlated with Diabetes and would be useful in prediction.
 
 [Click here for the Modeling Page](Modeling.html)
