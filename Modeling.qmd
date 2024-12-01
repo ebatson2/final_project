@@ -4,6 +4,14 @@ format: html
 editor: visual
 ---
 
-# Modeling
+## Introduction
+
+## Split Data
+
+## Model Creation
+
+### Classification Tree
+
+### 
 
 [Click here for the EDA Page](EDA.html)

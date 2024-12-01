@@ -4,13 +4,104 @@ format: html
 editor: visual
 ---
 
-# EDA
-
 ## Our Dataset
-*briefly describe the data and the variables you have to work with (just discuss the ones you’ll investigate/use in your analysis).*
+
+In this Exploratory Data Analysis, we will explore the [Diabetes Health Indicators Dataset from kaggle](https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/data?select=diabetes_binary_health_indicators_BRFSS2015.csv). As our goal is to model this dataset and predict the Diabetes variable, we are looking for correlations between other variables and the Diabetes variable. The other variables in this dataset and their expected values are:
+
+-   Diabetes:
+
+    -   no diabetes
+    -   prediabetes or diabetes
+
+-   High_BP: yes/no
+
+    (subject has high blood pressure)
+
+-   High_Cholesterol: yes/no
+
+-   Checked_Cholesterol_5years: yes/no
+
+-   BMI: numeric, ranging from 12 to 98
+
+-   Smoker: yes/no
+
+-   Stroke: yes/no
+
+-   Heart_Disease_or_Attack: yes/no
+
+-   Physical_Activity_30days: yes/no
+
+-   Daily_Fruit: yes/no
+
+-   Daily_Vegetable: yes/no
+
+-   Heavy_Alcohol_Consumption: yes/no
+
+-   Has_Healthcare: yes/no
+
+    (subject has some kind of healthcare coverage)
+
+-   No_Doctor_bc_Cost: yes/no
+
+    (subject has needed to see a doctor within the last year but couldn't due to cost)
+
+-   General_Health:
+
+    -   poor
+    -   fair
+    -   good
+    -   very good
+    -   excellent
+
+-   Bad_Mental_Days_of_Past_30: numeric, ranging from 0 to 30
+
+-   Bad_Physical_Days_of_Past_30: numeric, ranging from 0 to 30
+
+-   Difficulty_Walking: yes/no
+
+-   Sex: male/female
+
+-   Age:
+
+    -   18-24
+    -   25-29
+    -   30-34
+    -   35-39
+    -   40-44
+    -   45-49
+    -   50-54
+    -   55-59
+    -   60-64
+    -   65-69
+    -   70-74
+    -   75-79
+    -   80 or older
+
+-   Highest_Education_Achieved:
+
+    -   kindergarten
+    -   1st-8th grade
+    -   9th-11th grade
+    -   12th grade or GED
+    -   1-3 years college
+    -   4+ years college
+
+-   Income:
+
+    -   less than $10,000
+    -   less than $15,000
+    -   less than $20,000
+    -   less than $25,000
+    -   less than $35,000
+    -   less than $50,000
+    -   less than $75,000
+    -   more than $75,000
+
+The raw data in this dataset will need to be cleaned up a bit before it looks like the description above! This will be part of our Data Processing step below. We will also use the Data Summaries section below to explore the relationship between each variable and the target variable in order to narrow down which variables we will use for our modeling step, which we will discuss next.
 
 ## Purpose
-*describe the purpose of your EDA and ultimate goal of modeling.*
+
+This EDA will be used to discover how to preprocess our dataset for modeling, and to narrow down which variables we use in our model. The purpose of the model, which we will build in the [Modeling page](Modeling.html), is to learn the structure of the data in order to predict the response variable (Diabetes) from the values of the rest of the variables in the dataset. This means that given a new observation, without seeing the Diabetes variable, we will be able to predict its value.
 
 ## Importing the Data + Initial Data Processing
 
@@ -178,9 +269,9 @@ head(df)
 
 Now our numeric variables consist of:
 
-- BMI
-- Bad_Mental_Days_of_Past_30
-- Bad_Physical_Days_of_Past_30
+-   BMI
+-   Bad_Mental_Days_of_Past_30
+-   Bad_Physical_Days_of_Past_30
 
 and the rest of the columns contain factor/categorical variables, including our response variable, which is Diabetes.
 
@@ -338,19 +429,19 @@ ggplot(data = df |>
 
 From the proportions of observations in each category with and without diabetes, it looks like the variables that are most interesting to use for prediction of Diabetes are:
 
-- High_BP
-- High_Cholesterol
-- Smoker
-- Stroke
-- Heart_Disease_or_Attack
-- Physical_Activity_30days
-- Daily_Fruit
-- Daily_Vegetable
-- General_Health
-- Difficulty_Walking
-- Age (*maybe*)
-- Highest_Education_Achieved
-- Income
+-   High_BP
+-   High_Cholesterol
+-   Smoker
+-   Stroke
+-   Heart_Disease_or_Attack
+-   Physical_Activity_30days
+-   Daily_Fruit
+-   Daily_Vegetable
+-   General_Health
+-   Difficulty_Walking
+-   Age
+-   Highest_Education_Achieved
+-   Income
 
 Now let's look at the distribution of numerical values:
 
