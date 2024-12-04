@@ -309,6 +309,7 @@ table(df$Diabetes, Has_Healthcare=df$Has_Healthcare)
 table(df$Diabetes, No_Doctor_bc_Cost=df$No_Doctor_bc_Cost)
 table(df$Diabetes, General_Health=df$General_Health)
 table(df$Diabetes, Difficulty_Walking=df$Difficulty_Walking)
+table(df$Diabetes, Sex=df$Sex)
 table(df$Diabetes, Age=df$Age)
 table(df$Diabetes, Highest_Education_Achieved=df$Highest_Education_Achieved)
 table(df$Diabetes, Income=df$Income)
@@ -405,6 +406,12 @@ ggplot(data = df |>
   geom_bar(position = "dodge", stat = "identity")
 
 ggplot(data = df |>
+  group_by(Diabetes, Sex) |>
+  summarize(count = n()), aes(x = Sex, y = count, fill = Diabetes)) +
+  ggtitle("Diabetes counts vs. Sex") + 
+  geom_bar(position = "dodge", stat = "identity")
+
+ggplot(data = df |>
   group_by(Diabetes, Age) |>
   summarize(count = n()), aes(x = Age, y = count, fill = Diabetes)) +
   ggtitle("Diabetes counts vs. Age") + 
@@ -439,6 +446,7 @@ From the proportions of observations in each category with and without diabetes,
 -   Daily_Vegetable
 -   General_Health
 -   Difficulty_Walking
+-   Sex
 -   Age
 -   Highest_Education_Achieved
 -   Income

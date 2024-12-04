@@ -6,12 +6,169 @@ editor: visual
 
 ## Introduction
 
-## Split Data
+In this Modeling page, we will build predictive classification models for the [Diabetes Health Indicators Dataset from kaggle](https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/data?select=diabetes_binary_health_indicators_BRFSS2015.csv). Our goal is predict the Diabetes_binary variable, and for this task, we will use the following variables as determined by our [Exploratory Data Analysis](EDA.html):
+
+**Categorical Variables**
+
+-   HighBP (whether the subject has high blood pressure)
+-   HighChol (whether the subject has high cholesterol)
+-   Smoker
+-   Stroke
+-   HeartDiseaseorAttack
+-   PhysActivity (physical activity in the past 30 days, not including job)
+-   Fruits (subject consumes fruit at least once a day)
+-   Veggies (subject consumes veggies at least once a day)
+-   GenHlth (subject's rating of their health from 1=excellent to 5=poor)
+-   DiffWalk (serious difficulty walking or climbing stairs)
+-   Sex (male or female)
+-   Age (age categories from "18-24" to "80 or older")
+-   Education (highest education achieved, from 1="kindergarten" to 6="4+ years of college")
+-   Income (income categories from "less than \$10,000" to "more than \$75,000")
+
+**Numerical Variables**
+
+-   BMI
+-   MentHlth (how many of the last 30 days were poor mental health days)
+-   PhysHlth (how many of the last 30 days were poor physical health days)
+
+## Load + Split Data
+
+*Then, split the data into a training (70% of the data) and test set (30% of the data). Set a seed to make things reproducible. The goal is to create models for predicting the Diabetes_binary variable (using tidymodels). We’ll use log-loss as our metric to evaluate the models. For both model types, use log-loss with 5 fold cross-validation to select the best model from that family of models. You should set up your own grid of tuning parameters for each model (even if it is just the number of levels to look at).*
+
+```{r}
+#| output: false
+
+# import libraries
+library(readr)
+library(tidymodels)
+```
+
+```{r}
+# read in the data
+df <- readr::read_csv("diabetes_binary_health_indicators_BRFSS2015.csv")
+head(df)
+
+set.seed(29)
+
+# stratifying to make sure each model gets trained with examples with Diabetes=1
+df_split <- initial_split(df, prop=0.7, strata=Diabetes_binary)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+# creating folds for cross validation
+df_folds <- vfold_cv(df_train, 5)
+```
 
 ## Model Creation
 
 ### Classification Tree
 
-### 
+A classification tree model is a decision tree model whose output is one of the categorical values of the response variable. The model is used to predict the value of the response variable for a new datapoint that contains the necessary input variables. For each node in the tree, the branches from that node decide the flow of the datapoint to the next node based on the value of one of the variables. For example, one branch is taken if the datapoint's BMI value is less than 27, otherwise the other branch is taken. The datapoint flows through the tree until a leaf node is reached, and the leaf node indicates the response variable for the point to be either 0 (no diabetes) or 1 (prediabetes or diabetes).
+
+Let's train a classification tree on our data:
+
+```{r}
+# create the recipe for our classification tree
+# convert the categorical variables to factors and then dummy variables
+tree_recipe <- recipe(Diabetes_binary ~ HighChol + Smoker + Sex + Income + BMI, data=df_train) |>
+  step_mutate(Diabetes_binary=as.factor(Diabetes_binary)) |>
+  step_mutate(HighChol=as.factor(HighChol)) |>
+  step_mutate(Smoker=as.factor(Smoker)) |>
+  step_mutate(Sex=as.factor(Sex)) |>
+  step_mutate(Income=as.factor(Income)) |>
+  step_dummy(HighChol, Smoker, Sex, Income)
+
+# define model architecture
+tree_model <- decision_tree(cost_complexity = tune()) |>  
+  set_engine("rpart") |>
+  set_mode("classification")
+
+# create tree workflow
+tree_wfl <- workflow() |>
+  add_recipe(tree_recipe) |>
+  add_model(tree_model)
+
+# use a grid search for tuning parameter
+tree_grid <- tree_wfl |> 
+  tune_grid(resamples = df_folds, metrics=metric_set(mn_log_loss))
+```
+
+Now that we have multiple classification trees trained with varying values of the cost_complexity parameter, let's determine which one has the best performance with the log loss metric and finalize the model's workflow:
+
+```{r}
+# see how the log loss metric looks for each model in the grid
+tree_grid |> collect_metrics()
+
+# use log loss to determine the best model (i.e. that with the best tuning parameter value) and finalize its workflow
+tree_best <- select_best(tree_grid, metric="mn_log_loss")
+
+tree_final_wfl <- tree_wfl |>
+  finalize_workflow(tree_best)
+```
+
+Now we can use our finalized workflow to train a final classification tree model on all of the training data:
+
+```{r}
+# train the final tree model to be compared to the random forest model
+tree_final <- tree_final_wfl |>
+  last_fit(df_split, metrics=metric_set(mn_log_loss))
+```
+
+
+### Random Forest
+
+A random forest model combines many decision trees into one model. In our case, since we are doing classification, the output of all of the individual decision trees is aggregated and a majority vote determines which classification value is output. The trees in the random forest are trained with random samples from the training dataset, and only with some subset of the variables in the training dataset. For example, rather than using all 5 of our predictor variables for training, each tree in our random forest might only be trained with 3 of the predictor variables. This produces a greater variety of tree structure within the forest, causing our overall model to be more consistent in structure and less sensitive to the training dataset used.
+
+Let's train a random forest on our data! We'll tune our mtry parameter, which controls how many variables are used in the trees within the random forest:
+
+```{r}
+# same recipe works for random forest
+rf_recipe <- tree_recipe
+
+# use random forest model from parsnip
+rf_model <- rand_forest(mtry = tune()) |>
+ set_engine("ranger") |>
+ set_mode("classification")
+
+# create random forest workflow
+rf_wfl <- workflow() |>
+ add_recipe(rf_recipe) |>
+ add_model(rf_model)
+
+# use a grid search for tuning parameter
+rf_grid <- rf_wfl |>
+ tune_grid(resamples = df_folds, metrics=metric_set(mn_log_loss))
+```
+
+Now that we have multiple random forests trained with varying values of the mtry parameter, let's determine which one has the best performance with the log loss metric and finalize the model's workflow:
+
+```{r}
+# see how the log loss metric looks for each model in the grid
+rf_grid |> collect_metrics()
+
+# use log loss to determine the best model (i.e. that with the best tuning parameter value) and finalize its workflow
+rf_best <- select_best(rf_grid, metric="mn_log_loss")
+
+rf_final_wfl <- rf_wfl |>
+  finalize_workflow(rf_best)
+```
+
+Now we can use our finalized workflow to train a final random forest model on all of the training data:
+
+```{r}
+# train the final random forest model to be compared to the tree model
+rf_final <- rf_final_wfl |>
+  last_fit(df_split, metrics=metric_set(mn_log_loss))
+```
+
+### Final Model Selection
+
+Let's compare our final tree model and our final random forest model and see which has better performance on the test set:
+
+```{r}
+rbind(collect_metrics(tree_final), collect_metrics(rf_final))
+```
+
+The winner is.....the random forest model! 🏆
 
 [Click here for the EDA Page](EDA.html)

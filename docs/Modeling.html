@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -99,11 +133,222 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="modeling" class="level1">
-<h1>Modeling</h1>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In this Modeling page, we will build predictive classification models for the <a href="https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/data?select=diabetes_binary_health_indicators_BRFSS2015.csv">Diabetes Health Indicators Dataset from kaggle</a>. Our goal is predict the Diabetes_binary variable, and for this task, we will use the following variables as determined by our <a href="EDA.html">Exploratory Data Analysis</a>:</p>
+<p><strong>Categorical Variables</strong></p>
+<ul>
+<li>HighBP (whether the subject has high blood pressure)</li>
+<li>HighChol (whether the subject has high cholesterol)</li>
+<li>Smoker</li>
+<li>Stroke</li>
+<li>HeartDiseaseorAttack</li>
+<li>PhysActivity (physical activity in the past 30 days, not including job)</li>
+<li>Fruits (subject consumes fruit at least once a day)</li>
+<li>Veggies (subject consumes veggies at least once a day)</li>
+<li>GenHlth (subject’s rating of their health from 1=excellent to 5=poor)</li>
+<li>DiffWalk (serious difficulty walking or climbing stairs)</li>
+<li>Sex (male or female)</li>
+<li>Age (age categories from “18-24” to “80 or older”)</li>
+<li>Education (highest education achieved, from 1=“kindergarten” to 6=“4+ years of college”)</li>
+<li>Income (income categories from “less than $10,000” to “more than $75,000”)</li>
+</ul>
+<p><strong>Numerical Variables</strong></p>
+<ul>
+<li>BMI</li>
+<li>MentHlth (how many of the last 30 days were poor mental health days)</li>
+<li>PhysHlth (how many of the last 30 days were poor physical health days)</li>
+</ul>
+</section>
+<section id="load-split-data" class="level2">
+<h2 class="anchored" data-anchor-id="load-split-data">Load + Split Data</h2>
+<p><em>Then, split the data into a training (70% of the data) and test set (30% of the data). Set a seed to make things reproducible. The goal is to create models for predicting the Diabetes_binary variable (using tidymodels). We’ll use log-loss as our metric to evaluate the models. For both model types, use log-loss with 5 fold cross-validation to select the best model from that family of models. You should set up your own grid of tuning parameters for each model (even if it is just the number of levels to look at).</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read in the data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"diabetes_binary_health_indicators_BRFSS2015.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 253680 Columns: 22
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (22): Diabetes_binary, HighBP, HighChol, CholCheck, BMI, Smoker, Stroke,...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 22
+  Diabetes_binary HighBP HighChol CholCheck   BMI Smoker Stroke
+            &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1               0      1        1         1    40      1      0
+2               0      0        0         0    25      1      0
+3               0      1        1         1    28      0      0
+4               0      1        0         1    27      0      0
+5               0      1        1         1    24      0      0
+6               0      1        1         1    25      1      0
+# ℹ 15 more variables: HeartDiseaseorAttack &lt;dbl&gt;, PhysActivity &lt;dbl&gt;,
+#   Fruits &lt;dbl&gt;, Veggies &lt;dbl&gt;, HvyAlcoholConsump &lt;dbl&gt;, AnyHealthcare &lt;dbl&gt;,
+#   NoDocbcCost &lt;dbl&gt;, GenHlth &lt;dbl&gt;, MentHlth &lt;dbl&gt;, PhysHlth &lt;dbl&gt;,
+#   DiffWalk &lt;dbl&gt;, Sex &lt;dbl&gt;, Age &lt;dbl&gt;, Education &lt;dbl&gt;, Income &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">29</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># stratifying to make sure each model gets trained with examples with Diabetes=1</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>df_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(df, <span class="at">prop=</span><span class="fl">0.7</span>, <span class="at">strata=</span>Diabetes_binary)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>df_train <span class="ot">&lt;-</span> <span class="fu">training</span>(df_split)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(df_split)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># creating folds for cross validation</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>df_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(df_train, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-creation" class="level2">
+<h2 class="anchored" data-anchor-id="model-creation">Model Creation</h2>
+<section id="classification-tree" class="level3">
+<h3 class="anchored" data-anchor-id="classification-tree">Classification Tree</h3>
+<p>A classification tree model is a decision tree model whose output is one of the categorical values of the response variable. The model is used to predict the value of the response variable for a new datapoint that contains the necessary input variables. For each node in the tree, the branches from that node decide the flow of the datapoint to the next node based on the value of one of the variables. For example, one branch is taken if the datapoint’s BMI value is less than 27, otherwise the other branch is taken. The datapoint flows through the tree until a leaf node is reached, and the leaf node indicates the response variable for the point to be either 0 (no diabetes) or 1 (prediabetes or diabetes).</p>
+<p>Let’s train a classification tree on our data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the recipe for our classification tree</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># convert the categorical variables to factors and then dummy variables</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>tree_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Diabetes_binary <span class="sc">~</span> HighChol <span class="sc">+</span> Smoker <span class="sc">+</span> Sex <span class="sc">+</span> Income <span class="sc">+</span> BMI, <span class="at">data=</span>df_train) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_mutate</span>(<span class="at">Diabetes_binary=</span><span class="fu">as.factor</span>(Diabetes_binary)) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_mutate</span>(<span class="at">HighChol=</span><span class="fu">as.factor</span>(HighChol)) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_mutate</span>(<span class="at">Smoker=</span><span class="fu">as.factor</span>(Smoker)) <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_mutate</span>(<span class="at">Sex=</span><span class="fu">as.factor</span>(Sex)) <span class="sc">|&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_mutate</span>(<span class="at">Income=</span><span class="fu">as.factor</span>(Income)) <span class="sc">|&gt;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(HighChol, Smoker, Sex, Income)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># define model architecture</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>tree_model <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(<span class="at">cost_complexity =</span> <span class="fu">tune</span>()) <span class="sc">|&gt;</span>  </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"rpart"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># create tree workflow</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>tree_wfl <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(tree_recipe) <span class="sc">|&gt;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(tree_model)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># use a grid search for tuning parameter</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>tree_grid <span class="ot">&lt;-</span> tree_wfl <span class="sc">|&gt;</span> </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(<span class="at">resamples =</span> df_folds, <span class="at">metrics=</span><span class="fu">metric_set</span>(mn_log_loss))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'rpart' was built under R version 4.4.2</code></pre>
+</div>
+</div>
+<p>Now that we have multiple classification trees trained with varying values of the cost_complexity parameter, let’s determine which one has the best performance with the log loss metric and finalize the model’s workflow:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># see how the log loss metric looks for each model in the grid</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>tree_grid <span class="sc">|&gt;</span> <span class="fu">collect_metrics</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 7
+   cost_complexity .metric     .estimator  mean     n std_err .config           
+             &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;             
+ 1        1.51e- 5 mn_log_loss binary     0.378     5 0.00125 Preprocessor1_Mod…
+ 2        6.27e- 5 mn_log_loss binary     0.378     5 0.00126 Preprocessor1_Mod…
+ 3        1.95e- 9 mn_log_loss binary     0.369     5 0.00358 Preprocessor1_Mod…
+ 4        7.54e- 9 mn_log_loss binary     0.369     5 0.00358 Preprocessor1_Mod…
+ 5        5.15e- 2 mn_log_loss binary     0.404     5 0.00175 Preprocessor1_Mod…
+ 6        3.21e-10 mn_log_loss binary     0.369     5 0.00358 Preprocessor1_Mod…
+ 7        7.16e- 3 mn_log_loss binary     0.404     5 0.00175 Preprocessor1_Mod…
+ 8        4.59e- 4 mn_log_loss binary     0.378     5 0.00166 Preprocessor1_Mod…
+ 9        2.14e- 7 mn_log_loss binary     0.369     5 0.00358 Preprocessor1_Mod…
+10        2.44e- 6 mn_log_loss binary     0.369     5 0.00358 Preprocessor1_Mod…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use log loss to determine the best model (i.e. that with the best tuning parameter value) and finalize its workflow</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>tree_best <span class="ot">&lt;-</span> <span class="fu">select_best</span>(tree_grid, <span class="at">metric=</span><span class="st">"mn_log_loss"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>tree_final_wfl <span class="ot">&lt;-</span> tree_wfl <span class="sc">|&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(tree_best)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can use our finalized workflow to train a final classification tree model on all of the training data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># train the final tree model to be compared to the random forest model</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>tree_final <span class="ot">&lt;-</span> tree_final_wfl <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">last_fit</span>(df_split, <span class="at">metrics=</span><span class="fu">metric_set</span>(mn_log_loss))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="random-forest" class="level3">
+<h3 class="anchored" data-anchor-id="random-forest">Random Forest</h3>
+<p>A random forest model combines many decision trees into one model. In our case, since we are doing classification, the output of all of the individual decision trees is aggregated and a majority vote determines which classification value is output. The trees in the random forest are trained with random samples from the training dataset, and only with some subset of the variables in the training dataset. For example, rather than using all 5 of our predictor variables for training, each tree in our random forest might only be trained with 3 of the predictor variables. This produces a greater variety of tree structure within the forest, causing our overall model to be more consistent in structure and less sensitive to the training dataset used.</p>
+<p>Let’s train a random forest on our data! We’ll tune our mtry parameter, which controls how many variables are used in the trees within the random forest:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># same recipe works for random forest</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>rf_recipe <span class="ot">&lt;-</span> tree_recipe</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># use random forest model from parsnip</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>rf_model <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">mtry =</span> <span class="fu">tune</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a> <span class="fu">set_engine</span>(<span class="st">"ranger"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a> <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># create random forest workflow</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>rf_wfl <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a> <span class="fu">add_recipe</span>(rf_recipe) <span class="sc">|&gt;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a> <span class="fu">add_model</span>(rf_model)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># use a grid search for tuning parameter</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>rf_grid <span class="ot">&lt;-</span> rf_wfl <span class="sc">|&gt;</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a> <span class="fu">tune_grid</span>(<span class="at">resamples =</span> df_folds, <span class="at">metrics=</span><span class="fu">metric_set</span>(mn_log_loss))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i Creating pre-processing data to finalize unknown parameter: mtry</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ranger' was built under R version 4.4.2</code></pre>
+</div>
+</div>
+<p>Now that we have multiple random forests trained with varying values of the mtry parameter, let’s determine which one has the best performance with the log loss metric and finalize the model’s workflow:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># see how the log loss metric looks for each model in the grid</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>rf_grid <span class="sc">|&gt;</span> <span class="fu">collect_metrics</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 7
+   mtry .metric     .estimator  mean     n std_err .config             
+  &lt;int&gt; &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+1     2 mn_log_loss binary     0.359     5 0.00182 Preprocessor1_Model1
+2     3 mn_log_loss binary     0.354     5 0.00194 Preprocessor1_Model2
+3     6 mn_log_loss binary     0.353     5 0.00207 Preprocessor1_Model3
+4    10 mn_log_loss binary     0.360     5 0.00213 Preprocessor1_Model4
+5     9 mn_log_loss binary     0.358     5 0.00212 Preprocessor1_Model5
+6     4 mn_log_loss binary     0.352     5 0.00202 Preprocessor1_Model6
+7     1 mn_log_loss binary     0.374     5 0.00159 Preprocessor1_Model7
+8     7 mn_log_loss binary     0.354     5 0.00208 Preprocessor1_Model8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use log loss to determine the best model (i.e. that with the best tuning parameter value) and finalize its workflow</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>rf_best <span class="ot">&lt;-</span> <span class="fu">select_best</span>(rf_grid, <span class="at">metric=</span><span class="st">"mn_log_loss"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>rf_final_wfl <span class="ot">&lt;-</span> rf_wfl <span class="sc">|&gt;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(rf_best)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can use our finalized workflow to train a final random forest model on all of the training data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># train the final random forest model to be compared to the tree model</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>rf_final <span class="ot">&lt;-</span> rf_final_wfl <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">last_fit</span>(df_split, <span class="at">metrics=</span><span class="fu">metric_set</span>(mn_log_loss))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="final-model-selection" class="level3">
+<h3 class="anchored" data-anchor-id="final-model-selection">Final Model Selection</h3>
+<p>Let’s compare our final tree model and our final random forest model and see which has better performance on the test set:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="fu">collect_metrics</span>(tree_final), <span class="fu">collect_metrics</span>(rf_final))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  .metric     .estimator .estimate .config             
+  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 mn_log_loss binary         0.361 Preprocessor1_Model1
+2 mn_log_loss binary         0.351 Preprocessor1_Model1</code></pre>
+</div>
+</div>
+<p>The winner is…..the random forest model! 🏆</p>
 <p><a href="EDA.html">Click here for the EDA Page</a></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
