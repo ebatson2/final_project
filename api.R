@@ -3,7 +3,6 @@ library(readr)
 library(plumber)
 library(tidymodels)
 library(DescTools)
-library(png)
 
 # read in data
 df <- readr::read_csv("diabetes_binary_health_indicators_BRFSS2015.csv")
